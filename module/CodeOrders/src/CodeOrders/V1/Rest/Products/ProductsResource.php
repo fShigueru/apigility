@@ -1,19 +1,11 @@
 <?php
-namespace CodeOrders\V1\Rest\Users;
+namespace CodeOrders\V1\Rest\Products;
 
 use ZF\ApiProblem\ApiProblem;
 use ZF\Rest\AbstractResourceListener;
 
-class UsersResource extends AbstractResourceListener
+class ProductsResource extends AbstractResourceListener
 {
-
-    protected $repository;
-
-    public function __construct(UsersRepository $repository)
-    {
-        $this->repository = $repository;
-    }
-
     /**
      * Create a resource
      *
@@ -22,7 +14,7 @@ class UsersResource extends AbstractResourceListener
      */
     public function create($data)
     {
-        return $this->repository->insert($data);
+        return new ApiProblem(405, 'The POST method has not been defined');
     }
 
     /**
@@ -33,7 +25,7 @@ class UsersResource extends AbstractResourceListener
      */
     public function delete($id)
     {
-        return $this->repository->delete($id);
+        return new ApiProblem(405, 'The DELETE method has not been defined for individual resources');
     }
 
     /**
@@ -55,7 +47,7 @@ class UsersResource extends AbstractResourceListener
      */
     public function fetch($id)
     {
-        return $this->repository->find($id);
+        return new ApiProblem(405, 'The GET method has not been defined for individual resources');
     }
 
     /**
@@ -66,7 +58,7 @@ class UsersResource extends AbstractResourceListener
      */
     public function fetchAll($params = array())
     {
-        return $this->repository->findAll();
+        return new ApiProblem(405, 'The GET method has not been defined for collections');
     }
 
     /**
@@ -99,8 +91,8 @@ class UsersResource extends AbstractResourceListener
      * @param  mixed $data
      * @return ApiProblem|mixed
      */
-    public function update($id,$data)
+    public function update($id, $data)
     {
-        return $this->repository->update($id,$data);
+        return new ApiProblem(405, 'The PUT method has not been defined for individual resources');
     }
 }

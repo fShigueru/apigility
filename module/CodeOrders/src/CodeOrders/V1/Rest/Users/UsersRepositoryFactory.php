@@ -27,8 +27,6 @@ class UsersRepositoryFactory implements FactoryInterface
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
         $dbAdapter = $serviceLocator->get('DbAdapter');
-        //O Mapper será necessário quando os atributos da entidade não forem iguais a da tabela do banco de dados
-        //$userMapper = new UsersMapper();
         $hydrator = new HydratingResultSet(new ClassMethods(), new UsersEntity());
         $tableGateway = new TableGateway('oauth_users',$dbAdapter,null,$hydrator);
         $usersRepository  = new UsersRepository($tableGateway);

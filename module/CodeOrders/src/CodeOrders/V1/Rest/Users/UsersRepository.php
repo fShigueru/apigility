@@ -11,6 +11,7 @@ namespace CodeOrders\V1\Rest\Users;
 
 use Zend\Db\TableGateway\TableGatewayInterface;
 use Zend\Paginator\Adapter\DbTableGateway;
+use Zend\Stdlib\Hydrator\ObjectProperty;
 
 class UsersRepository
 {
@@ -25,10 +26,8 @@ class UsersRepository
     public function findAll()
     {
         $tableGateway = $this->tableGateway;
-        //tipo de adaptador para paginação, precisa passar o table gateway
         $paginatorAdapter = new DbTableGateway($tableGateway);
 
-        //retornando um UsersCollection ele vai fazer a paginação, porque ele extends de paginator
         return new UsersCollection($paginatorAdapter);
     }
 
@@ -36,6 +35,23 @@ class UsersRepository
     {
         $resultSet = $this->tableGateway->select(['id' => (int)$id]);
         return $resultSet->current();
+    }
+
+    public function insert($data)
+    {
+        $hydrator = new ObjectProperty();
+        return $this->tableGateway->insert($hydrator->extract($data));
+    }
+
+    public function update($id,$data)
+    {
+        $hydrator = new ObjectProperty();
+        return $this->tableGateway->update($hydrator->extract($data),['id' => $id]);
+    }
+
+    public function delete($id){
+        $this->tableGateway->delete(['id' => $id]);
+        return true;
     }
 
 }
