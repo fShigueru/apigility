@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 Apigility Skeleton Application
 ==============================
 
@@ -199,3 +200,7 @@ Test your container:
 ```bash
 docker run -it -p "80:80" apighost
 ```
+=======
+# apigility
+apigility
+>>>>>>> cae7e03d9812807dce2dd9f9da00070ef5a2a587
