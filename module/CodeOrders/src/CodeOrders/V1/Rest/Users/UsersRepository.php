@@ -54,4 +54,9 @@ class UsersRepository
         return true;
     }
 
+    public function findByUserName($username)
+    {
+        return $this->tableGateway->select(['username' => $username])->current();
+    }
+
 }
