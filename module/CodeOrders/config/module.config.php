@@ -56,6 +56,7 @@ return array(
             2 => 'code-orders.rest.clients',
             3 => 'code-orders.rest.products',
             4 => 'code-orders.rest.orders',
+            5 => 'code-orders.rest.clients',
         ),
     ),
     'zf-rest' => array(
@@ -282,7 +283,7 @@ return array(
                 'entity_identifier_name' => 'id',
                 'route_name' => 'code-orders.rest.orders',
                 'route_identifier_name' => 'orders_id',
-                'hydrator' => 'Zend\\Stdlib\\Hydrator\\ArraySerializable',
+                'hydrator' => 'Zend\\Stdlib\\Hydrator\\ClassMethods',
             ),
             'CodeOrders\\V1\\Rest\\Orders\\OrdersCollection' => array(
                 'entity_identifier_name' => 'id',
@@ -534,11 +535,29 @@ return array(
             'CodeOrders\\V1\\Rest\\Orders\\OrdersResource' => 'CodeOrders\\V1\\Rest\\Orders\\OrdersResourceFactory',
             'CodeOrders\\V1\\Rest\\Orders\\OrderItemTableGateway' => 'CodeOrders\\V1\\Rest\\Orders\\OrderItemTableGatewayFactory',
             'CodeOrders\\V1\\Rest\\Orders\\OrdersRepository' => 'CodeOrders\\V1\\Rest\\Orders\\OrdersRepositoryFactory',
+            'CodeOrders\\V1\\Rest\\Orders\\OrdersService' => 'CodeOrders\\V1\\Rest\\Orders\\OrdersServiceFactory',
+            'CodeOrders\\V1\\Rest\\Clients\\ClientsResource' => 'CodeOrders\\V1\\Rest\\Clients\\ClientsResourceFactory',
         ),
     ),
     'zf-mvc-auth' => array(
         'authorization' => array(
             'CodeOrders\\V1\\Rest\\Users\\Controller' => array(
+                'collection' => array(
+                    'GET' => true,
+                    'POST' => true,
+                    'PUT' => false,
+                    'PATCH' => false,
+                    'DELETE' => false,
+                ),
+                'entity' => array(
+                    'GET' => false,
+                    'POST' => false,
+                    'PUT' => true,
+                    'PATCH' => true,
+                    'DELETE' => true,
+                ),
+            ),
+            'CodeOrders\\V1\\Rest\\Orders\\Controller' => array(
                 'collection' => array(
                     'GET' => true,
                     'POST' => true,

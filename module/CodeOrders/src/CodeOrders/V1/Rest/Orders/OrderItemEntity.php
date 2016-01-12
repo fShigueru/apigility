@@ -15,8 +15,8 @@ class OrderItemEntity
     protected $id;
     protected $orderId;
     protected $productId;
-    protected $quantityId;
-    protected $prince;
+    protected $quantity;
+    protected $price;
     protected $total;
 
     /**
@@ -76,38 +76,40 @@ class OrderItemEntity
     /**
      * @return mixed
      */
-    public function getQuantityId()
+    public function getQuantity()
     {
-        return $this->quantityId;
+        return $this->quantity;
     }
 
     /**
-     * @param mixed $quantityId
+     * @param mixed $quantity
      * @return OrderItemEntity
      */
-    public function setQuantityId($quantityId)
+    public function setQuantity($quantity)
     {
-        $this->quantityId = $quantityId;
+        $this->quantity = $quantity;
         return $this;
     }
 
     /**
      * @return mixed
      */
-    public function getPrince()
+    public function getPrice()
     {
-        return $this->prince;
+        return $this->price;
     }
 
     /**
-     * @param mixed $prince
+     * @param mixed $price
      * @return OrderItemEntity
      */
-    public function setPrince($prince)
+    public function setPrice($price)
     {
-        $this->prince = $prince;
+        $this->price = $price;
         return $this;
     }
+
+
 
     /**
      * @return mixed

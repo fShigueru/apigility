@@ -1,6 +1,7 @@
 <?php
 namespace CodeOrders\V1\Rest\Orders;
 
+use CodeOrders\V1\Rest\Users\UsersRepository;
 use ZF\ApiProblem\ApiProblem;
 use ZF\Rest\AbstractResourceListener;
 
@@ -8,14 +9,18 @@ class OrdersResource extends AbstractResourceListener
 {
 
     private $repository;
+    private $ordersService;
+    private $usersRepository;
 
     /**
      * OrdersResource constructor.
      * @param $repository
      */
-    public function __construct(OrdersRepository $repository)
+    public function __construct(OrdersRepository $repository, OrdersService $ordersService, UsersRepository $usersRepository)
     {
         $this->repository = $repository;
+        $this->ordersService = $ordersService;
+        $this->usersRepository = $usersRepository;
     }
 
 
@@ -27,7 +32,19 @@ class OrdersResource extends AbstractResourceListener
      */
     public function create($data)
     {
-        return new ApiProblem(405, 'The POST method has not been defined');
+
+        $user = $this->usersRepository->findByUserName($this->getIdentity()->getRoleId());
+        if($user->getRole() != "salesman"){
+            return new ApiProblem(403, 'Esse usuário não tem permissão para criar um novo pedido');
+        }
+
+        $result = $this->ordersService->insert($data);
+
+        if ($result == "error") {
+            return new ApiProblem(405, 'Error processing order');
+        }
+
+        return $result;
     }
 
     /**
@@ -38,7 +55,17 @@ class OrdersResource extends AbstractResourceListener
      */
     public function delete($id)
     {
-        return new ApiProblem(405, 'The DELETE method has not been defined for individual resources');
+        $user = $this->usersRepository->findByUserName($this->getIdentity()->getRoleId());
+        if($user->getRole() != "admin"){
+            return new ApiProblem(403, 'Esse usuário não tem permissão para excluir esse pedido');
+        }
+
+        $result = $this->repository->find($id);
+        if(!$result){
+            return new ApiProblem(404, 'Registro não encontrado');
+        }
+
+        return $this->ordersService->delete($id);
     }
 
     /**
@@ -60,7 +87,18 @@ class OrdersResource extends AbstractResourceListener
      */
     public function fetch($id)
     {
-        return new ApiProblem(405, 'The GET method has not been defined for individual resources');
+        $user = $this->usersRepository->findByUserName($this->getIdentity()->getRoleId());
+        if($user->getRole() != "salesman"){
+            return new ApiProblem(403, 'Esse usuário não tem permissão para criar um novo pedido');
+        }
+
+        $orderOfUser = $this->repository->isOrderOfUser($id,$user->getId());
+
+        if(!$orderOfUser){
+            return new ApiProblem(403, 'Esse usuário não tem permissão para ver esse pedido');
+        }
+
+        return $this->repository->find($id);
     }
 
     /**
@@ -71,7 +109,12 @@ class OrdersResource extends AbstractResourceListener
      */
     public function fetchAll($params = array())
     {
-        return new ApiProblem(405, 'The GET method has not been defined for collections');
+        $user = $this->usersRepository->findByUserName($this->getIdentity()->getRoleId());
+        if($user->getRole() != "admin"){
+            return new ApiProblem(403, 'Esse usuário não tem permissão para listar os pedido');
+        }
+
+        return $this->repository->findAll();
     }
 
     /**
@@ -104,8 +147,23 @@ class OrdersResource extends AbstractResourceListener
      * @param  mixed $data
      * @return ApiProblem|mixed
      */
-    public function update($id, $data)
+    public function update($id,$data)
     {
-        return new ApiProblem(405, 'The PUT method has not been defined for individual resources');
+        $user = $this->usersRepository->findByUserName($this->getIdentity()->getRoleId());
+        if($user->getRole() != "admin"){
+            return new ApiProblem(403, 'Esse usuário não tem permissão para atualizar esse pedido');
+        }
+
+        $result = $this->repository->find($id);
+        if(!$result){
+            return new ApiProblem(404, 'Registro não encontrado');
+        }
+
+        $resultUpdate = $this->ordersService->update($id,$data);
+        if ($resultUpdate == "error") {
+            return new ApiProblem(405, 'Error processing order');
+        }
+
+        return $resultUpdate;
     }
 }

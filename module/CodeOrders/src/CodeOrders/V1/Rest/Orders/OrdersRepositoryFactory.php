@@ -9,8 +9,11 @@
 namespace CodeOrders\V1\Rest\Orders;
 
 
+use Zend\Db\ResultSet\HydratingResultSet;
+use Zend\Db\TableGateway\TableGateway;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
+use Zend\Stdlib\Hydrator\ClassMethods;
 
 class OrdersRepositoryFactory implements FactoryInterface
 {
@@ -26,7 +29,10 @@ class OrdersRepositoryFactory implements FactoryInterface
         $dbAdapter = $serviceLocator->get('DbAdapter');
         $hydrator = new HydratingResultSet(new ClassMethods(), new OrdersEntity());
         $tableGateway = new TableGateway('orders',$dbAdapter,null,$hydrator);
-        $ordersRepository  = new OrdersRepository($tableGateway);
+
+        $orderItemTableGateway = $serviceLocator->get('CodeOrders\\V1\\Rest\\Orders\\OrderItemTableGateway');
+
+        $ordersRepository  = new OrdersRepository($tableGateway, $orderItemTableGateway);
 
         return $ordersRepository;
     }

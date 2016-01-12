@@ -32,6 +32,5 @@ class UsersRepositoryFactory implements FactoryInterface
         $usersRepository  = new UsersRepository($tableGateway);
 
         return $usersRepository;
-
     }
 }
