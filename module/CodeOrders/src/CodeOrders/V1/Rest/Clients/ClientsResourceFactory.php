@@ -5,6 +5,9 @@ class ClientsResourceFactory
 {
     public function __invoke($services)
     {
-        return new ClientsResource();
+        return new ClientsResource(
+            $services->get('CodeOrders\\V1\\Rest\\Clients\\ClientsRepository'),
+            $services->get('CodeOrders\\V1\\Rest\\Users\\UsersRepository')
+        );
     }
 }

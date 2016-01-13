@@ -8,7 +8,6 @@
 
 namespace CodeOrders\V1\Rest\Users;
 
-
 use Zend\Db\ResultSet\HydratingResultSet;
 use Zend\Db\TableGateway\TableGateway;
 use Zend\ServiceManager\FactoryInterface;

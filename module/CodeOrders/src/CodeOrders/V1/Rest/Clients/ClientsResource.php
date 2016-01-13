@@ -1,11 +1,22 @@
 <?php
 namespace CodeOrders\V1\Rest\Clients;
 
+use CodeOrders\V1\Rest\Users\UsersRepository;
 use ZF\ApiProblem\ApiProblem;
 use ZF\Rest\AbstractResourceListener;
 
 class ClientsResource extends AbstractResourceListener
 {
+
+    protected $repository;
+    protected $usersRepository;
+
+    public function __construct(ClientsRepository $repository, UsersRepository $usersRepository)
+    {
+        $this->repository = $repository;
+        $this->usersRepository = $usersRepository;
+    }
+
     /**
      * Create a resource
      *
@@ -14,7 +25,15 @@ class ClientsResource extends AbstractResourceListener
      */
     public function create($data)
     {
-        return new ApiProblem(405, 'The POST method has not been defined');
+        $user = $this->usersRepository->findByUserName($this->getIdentity()->getRoleId());
+        if(!$user){
+            return new ApiProblem(405, 'Error processing');
+        }
+        if($user->getRole() != "admin"){
+            return new ApiProblem(403, 'Esse usuário não tem permissão para cadastrar um cliente');
+        }
+
+        return $this->repository->insert($data);
     }
 
     /**
@@ -25,7 +44,15 @@ class ClientsResource extends AbstractResourceListener
      */
     public function delete($id)
     {
-        return new ApiProblem(405, 'The DELETE method has not been defined for individual resources');
+        $user = $this->usersRepository->findByUserName($this->getIdentity()->getRoleId());
+        if(!$user){
+            return new ApiProblem(405, 'Error processing');
+        }
+        if($user->getRole() != "admin"){
+            return new ApiProblem(403, 'Esse usuário não tem permissão para excluir um cliente');
+        }
+
+        return $this->repository->delete($id);
     }
 
     /**
@@ -47,7 +74,14 @@ class ClientsResource extends AbstractResourceListener
      */
     public function fetch($id)
     {
-        return new ApiProblem(405, 'The GET method has not been defined for individual resources');
+        $user = $this->usersRepository->findByUserName($this->getIdentity()->getRoleId());
+        if(!$user){
+            return new ApiProblem(405, 'Error processing');
+        }
+        if($user->getRole() == "admin" || $user->getRole() == 'salesman'){
+            return $this->repository->find($id);
+        }
+        return new ApiProblem(403, 'Esse usuário não tem permissão para acessar os dados de um cliente');
     }
 
     /**
@@ -58,7 +92,14 @@ class ClientsResource extends AbstractResourceListener
      */
     public function fetchAll($params = array())
     {
-        return new ApiProblem(405, 'The GET method has not been defined for collections');
+        $user = $this->usersRepository->findByUserName($this->getIdentity()->getRoleId());
+        if(!$user){
+            return new ApiProblem(405, 'Error processing');
+        }
+        if($user->getRole() == "admin" || $user->getRole() == 'salesman'){
+            return $this->repository->findAll();
+        }
+        return new ApiProblem(403, 'Esse usuário não tem permissão para acessar os dados dos clientes');
     }
 
     /**
@@ -93,6 +134,13 @@ class ClientsResource extends AbstractResourceListener
      */
     public function update($id, $data)
     {
-        return new ApiProblem(405, 'The PUT method has not been defined for individual resources');
+        $user = $this->usersRepository->findByUserName($this->getIdentity()->getRoleId());
+        if(!$user){
+            return new ApiProblem(405, 'Error processing');
+        }
+        if($user->getRole() != "admin"){
+            return new ApiProblem(403, 'Esse usuário não tem permissão para acessar editar os dados de um cliente');
+        }
+        return $this->repository->update($id,$data);
     }
 }
