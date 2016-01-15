@@ -23,7 +23,7 @@ angular.module('starter', ['ionic','starter.controllers','angular-oauth2'])
   });
 })
 
-.config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider, OAuthProvider, OAuthTokenProvider){
+.config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider, OAuthProvider, OAuthTokenProvider, $httpProvider){
     OAuthProvider.configure({
         baseUrl: 'http://estudo.apigility.dev:8088',
         clientId: 'usuario',
@@ -39,6 +39,8 @@ angular.module('starter', ['ionic','starter.controllers','angular-oauth2'])
         }
     });
 
+    $httpProvider.defaults.headers.delete = { 'Content-Type' : 'application/json' };
+
     $stateProvider
       .state('tabs', {
           url: '/t',
@@ -49,7 +51,8 @@ angular.module('starter', ['ionic','starter.controllers','angular-oauth2'])
           url: '/orders',
           views: {
               'orders-tab':{
-                  templateUrl: 'templates/orders.html'
+                  templateUrl: 'templates/orders.html',
+                  controller: 'OrdersCtrl'
               }
           }
       })

@@ -58,10 +58,12 @@ class OrdersResource extends AbstractResourceListener
      */
     public function delete($id)
     {
+
         $user = $this->usersRepository->findByUserName($this->getIdentity()->getRoleId());
         if(!$user){
             return new ApiProblem(405, 'Error processing');
         }
+
         if($user->getRole() != "admin"){
             return new ApiProblem(403, 'Esse usuário não tem permissão para excluir esse pedido');
         }
@@ -118,10 +120,12 @@ class OrdersResource extends AbstractResourceListener
      */
     public function fetchAll($params = array())
     {
+
         $user = $this->usersRepository->findByUserName($this->getIdentity()->getRoleId());
         if(!$user){
             return new ApiProblem(405, 'Error processing');
         }
+
         if($user->getRole() != "admin"){
             return new ApiProblem(403, 'Esse usuário não tem permissão para listar os pedido');
         }
